@@ -1,0 +1,15 @@
+soinit_in 0.1
+somin_in 0.10024725150288782
+somax_in 0.2473299318437201
+plate_in 0.5
+preheat_sec 1.0
+start_sec 65.
+stop_sec 145
+fex_hz 10.0
+fs_hz 2000.0
+fg_scfh 15.138613062499997
+o2_scfh 19.579988593750006
+total_scfh 34.71860165625
+ratio_fo 0.7731676139654284
+cuto2_psig 75.0
+feedrate_ipm 24.0
