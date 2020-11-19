@@ -15,12 +15,33 @@ lplot.set_defaults(font_size=14)
 datadir = '../data'
 targetdir = '../export'
 nblock = 2000
-color = True
+color = False
 ####
 
 
+# Initialize the plot
+ax1,ax2 = lplot.init_xxyy(xlabel='Standoff (mm)', ylabel='Resistance (M$\Omega$)',\
+        x2label = 'Standoff (in)', label_size=14)
+
+style_array = [
+    {'linestyle':'none', 'marker':'o', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'o', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'s', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'s', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'d', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'d', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'^', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'^', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'v', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'v', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'<', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'<', 'mfc':'k', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'>', 'mfc':'w', 'mec':'k', 'ms':4},
+    {'linestyle':'none', 'marker':'>', 'mfc':'k', 'mec':'k', 'ms':4}
+]
+
 # Which data set are we operating on?
-for arg,label in zip(sys.argv[1::2], sys.argv[2::2]):
+for arg,label,style in zip(sys.argv[1::2], sys.argv[2::2], style_array):
     sourcedir = None
     for this in os.listdir(datadir):
         if this.endswith(arg):
@@ -132,8 +153,6 @@ for arg,label in zip(sys.argv[1::2], sys.argv[2::2]):
 
     print('Generating figures')
 
-    ax1,ax2 = lplot.init_xxyy(xlabel='Standoff (mm)', ylabel='Resistance (M$\Omega$)',\
-            x2label = 'Standoff (in)', label_size=14)
 
     if color:
         # Adjust the time array to start at 0 and trim it to be N-1 long
@@ -145,17 +164,27 @@ for arg,label in zip(sys.argv[1::2], sys.argv[2::2]):
         points = np.array([so_in * 25.4, r_Mohms]).T.reshape(-1, 1, 2)
         segments = np.concatenate([points[:-1], points[1:]], axis=1)
         norm = plt.Normalize(time_s.min(), time_s.max())
-        lc = LineCollection(segments, cmap='viridis', norm=norm)
-        lc.set_array(time_s)
-        lc.set_linewidth(2)
-        ax1.add_collection(lc)
+        ll = LineCollection(segments, cmap='viridis', norm=norm)
+        ll.set_array(time_s)
+        ll.set_linewidth(2)
+        ax1.add_collection(ll)
         
     else:
-        ax1.plot(so_in, r_Mohms, 'k')
+        ax1.plot(so_in * 25.4, r_Mohms, label=label, **style)
         
-    ax2.set_xlim([0., 7/25.4])
-    ax1.set_xlim([0., 7])
-    ax1.set_ylim([0., 0.05])
+ax2.set_xlim([0., 7/25.4])
+ax1.set_xlim([0., 7])
+ax1.set_ylim([0., 0.05])
+ax1.legend(loc=0)
 
-    target = os.path.join(targetdir, 'rs.png')
-    ax1.get_figure().savefig(target, dpi=300)
+# Do some figuring on the output
+target_count = 0
+target = os.path.join(targetdir, f'{target_count:03d}.png')
+while os.path.isfile(target):
+    target_count += 1
+    target = os.path.join(targetdir, f'{target_count:03d}.png')
+
+with open(os.path.join(targetdir, f'{target_count:03d}.param'), 'w') as ff:
+    ff.write(' '.join(sys.argv) + '\n')
+
+ax1.get_figure().savefig(target, dpi=300)
