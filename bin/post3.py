@@ -15,7 +15,7 @@ lplot.set_defaults(font_size=14)
 datadir = '../data'
 targetdir = '../export'
 nblock = 2000
-color = False
+color = True
 ####
 
 
@@ -168,14 +168,17 @@ for arg,label,style in zip(sys.argv[1::2], sys.argv[2::2], style_array):
         ll.set_array(time_s)
         ll.set_linewidth(2)
         ax1.add_collection(ll)
+
+        ax2.set_xlim([0., 7/25.4])
+        ax1.set_xlim([0., 7])
+        ax1.set_ylim([0., 0.05])
         
     else:
         ax1.plot(so_in * 25.4, r_Mohms, label=label, **style)
-        
-ax2.set_xlim([0., 7/25.4])
-ax1.set_xlim([0., 7])
-ax1.set_ylim([0., 0.05])
-ax1.legend(loc=0)
+        ax2.set_xlim([0., 7/25.4])
+        ax1.set_xlim([0., 7])
+        ax1.set_ylim([0., 0.05])
+        ax1.legend(loc=0)
 
 # Do some figuring on the output
 target_count = 0

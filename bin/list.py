@@ -6,12 +6,14 @@ datadir = '../data'
 
 # Loop over the contents of the data directory
 # Each is a data set
+count = 0
 contents = os.listdir(datadir)
 contents.sort()
 for this in contents:
     post1 = os.path.join(datadir, this, 'post1/post1.param')
     p1param = {'this':this[-5:]}
     if os.path.isfile(post1):
+        count += 1
         with open(post1,'r') as ff:
             for thisline in ff:
                 # Ignore comments
@@ -32,6 +34,6 @@ for this in contents:
                 else:
                     raise Exception(f'Could not parse line: {thisline}\n In file ==> {post1}')
                     
-        sys.stdout.write('{this} {plate_in:.2f}in  {feedrate_ipm:.1f}ipm  {total_scfh:.2f}scfh  {ratio_fo:.3f}f/o  {cuto2_psig:.0f}psig  {somin_in:.3f} to {somax_in:.3f}in\n'.format(**p1param))
+        sys.stdout.write(f'{count:02d}:' + '{this} {plate_in:.2f}in  {feedrate_ipm:.1f}ipm  {total_scfh:.2f}scfh  {ratio_fo:.3f}f/o  {cuto2_psig:.0f}psig  {somin_in:.3f} to {somax_in:.3f}in\n'.format(**p1param))
     else:
         sys.stdout.write('{this}\n'.format(**p1param))
