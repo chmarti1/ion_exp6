@@ -15,7 +15,7 @@ lplot.set_defaults(font_size=14)
 datadir = '../data'
 targetdir = '../export'
 nblock = 2000
-color = True
+color = False
 ####
 
 
